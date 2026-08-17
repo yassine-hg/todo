@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="todo.css">
+    <title>Todo App</title>
+</head>
+<body>
+    <div class="full_page">
+        <div class="first_part">
+            <h1>Todo App</h1>
+        </div>
+        <div class="second_part">
+            <div class="second_one">
+                <div class="name_take">
+                    <h1>Tasks</h1>
+                </div>
+                <div class="button_task">
+                    <button id="add" type="button">+ Add Task</button>
+                </div>
+            </div>
+            <div class="second_two">
+                <div class="task_content"></div>
+
+                <template id="task_template">
+                    <div class="task_row">
+                        <input type="checkbox" class="task_check">
+                        <span class="task_title"></span>
+                        <span class="task_date"></span>
+                        <button class="task_delete" type="button">x</button>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+    <div class="modal_overlay hidden" id="modal">
+    <div class="modal_box">
+
+        <div class="modal_header">
+            <h2>Task Details</h2>
+            <button class="close_x" id="close_x" type="button">&times;</button>
+        </div>
+
+        <div class="field">
+            <label for="title">Title</label>
+            <input type="text" id="title" placeholder="Add a task title">
+        </div>
+
+        <div class="field">
+            <label for="deadline">Deadline</label>
+            <input type="date" id="deadline">
+        </div>
+
+        <div class="modal_footer">
+            <button class="btn_close" id="close" type="button">Close</button>
+            <button class="btn_save" id="save" type="button">Save</button>
+        </div>
+
+    </div>
+</div>
+    <script src="todo.js"></script>
+</body>
+</html>
+ 

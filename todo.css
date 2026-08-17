@@ -1,0 +1,245 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.full_page{
+    min-height: 100vh;
+    background-color: rgb(243, 243, 243);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding: 30px 20px;
+}
+
+.first_part{
+    width: 100%;
+    max-width: 760px;
+    height: 125px;
+    background-color: rgb(20, 60, 35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.first_part h1{
+    color: white;
+    font-size: 46px;
+}
+
+.second_part{
+    width: 100%;
+    max-width: 760px;
+}
+
+.second_one{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.name_take h1{
+    font-size: 30px;
+    color: rgb(30, 30, 30);
+}
+
+.button_task button{
+    background-color: rgb(21, 101, 58);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 24px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.button_task button:hover{
+    background-color: rgb(16, 80, 45);
+}
+
+.second_two{
+    background-color: white;
+    border: 1px solid rgb(220, 220, 220);
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.task_content{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: auto;
+    border: none;
+}
+
+.no_data{
+    color: rgb(120, 120, 120);
+    font-size: 13px;
+}
+
+/* task */
+
+.modal_overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hidden{
+    display: none;
+}
+
+.modal_box{
+    background-color: white;
+    border: 1px solid rgb(220, 220, 220);
+    border-radius: 4px;
+    padding: 28px;
+    width: 100%;
+    max-width: 440px;
+}
+
+.modal_header{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 22px;
+}
+
+.modal_header h2{
+    font-size: 26px;
+    color: rgb(30, 30, 30);
+}
+
+.close_x{
+    background: none;
+    border: none;
+    color: rgb(21, 101, 58);
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.field{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+.field label{
+    font-size: 14px;
+    color: rgb(120, 120, 120);
+}
+
+.field input{
+    border: 1px solid rgb(225, 225, 225);
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-size: 15px;
+    font-family: inherit;
+}
+
+.field input:focus{
+    outline: none;
+    border-color: rgb(21, 101, 58);
+}
+
+.modal_footer{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 26px;
+}
+
+.btn_close{
+    background-color: white;
+    color: rgb(21, 101, 58);
+    border: 1px solid rgb(21, 101, 58);
+    border-radius: 5px;
+    padding: 12px 26px;
+    font-size: 15px;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.btn_close:hover{
+    background-color: rgb(243, 243, 243);
+}
+
+.btn_save{
+    background-color: rgb(21, 101, 58);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.btn_save:hover{
+    background-color: rgb(16, 80, 45);
+}
+
+.task_content{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: auto;
+    border: none;
+}
+
+.task_row{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background-color: white;
+    border: 1px solid rgb(228, 228, 228);
+    border-radius: 6px;
+    padding: 16px 18px;
+}
+
+.task_check{
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.task_title{
+    flex: 1;
+    font-size: 15px;
+    font-weight: bold;
+    color: rgb(30, 30, 30);
+}
+
+.task_date{
+    font-size: 14px;
+    color: rgb(21, 101, 58);
+}
+
+.task_delete{
+    background: none;
+    border: none;
+    font-size: 20px;
+    line-height: 1;
+    color: rgb(150, 150, 150);
+    cursor: pointer;
+}
+
+.task_delete:hover{
+    color: rgb(180, 60, 60);
+}
