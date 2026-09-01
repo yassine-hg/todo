@@ -1,3 +1,4 @@
+console.log("v2")
 const modal = document.getElementById("modal");
 const add = document.getElementById("add");
 const close_x = document.getElementById("close_x");
@@ -21,26 +22,23 @@ function handleOverlayClick(event) {
 }
 
 modal.addEventListener("click", handleOverlayClick);
-let tasks = [];
 
 
 const save = document.getElementById("save");
 
-function handleSave(){
+async function handleSave(){
     const title = document.getElementById("title").value;
     const date = document.getElementById("deadline").value;
-    const task={
-        id: Date.now(),
-        title : title,
-        deadline : date,
-        done: false
-    }
-
-    if(title === ""){
+     if(title === ""){
         return null;
     }
+    await fetch("/api/tasks" , {  //takes two arguments: the URL, and an options object describing the request.
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "title=" + encodeURIComponent(title) + "&deadline=" + date,
+    });
 
-    tasks.push(task);
+   
     closeModel();
     displaying();
 }
@@ -49,7 +47,9 @@ save.addEventListener("click" , handleSave);
 let taskcontent = document.querySelector(".task_content");
 
 
-function displaying(){
+async function displaying(){ // we declare  async so it can  wait before
+    const response = await fetch("/api/tasks"); // fetch  data  from  the  port 80 
+    const tasks = await response.json();
     taskcontent.innerHTML = "";
 
     if(tasks.length === 0){
@@ -69,14 +69,14 @@ function displaying(){
 }
 
 
-taskcontent.addEventListener("click" , function(event){
+taskcontent.addEventListener("click" ,async function(event){
     if(event.target.classList.contains("task_delete")){
         const  idToDelete = Number(event.target.dataset.id);
-        tasks = tasks.filter(function(task) {
-            return task.id !== idToDelete;
-    });
+        await fetch ("/api/tasks/" + idToDelete , {method: "DELETE"})
     
     displaying();
     }
 })
+
+displaying();
 
