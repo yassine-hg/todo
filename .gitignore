@@ -2,3 +2,4 @@ config.properties
 *.class
 *.jar
 command.txt
+OAuth.txt
