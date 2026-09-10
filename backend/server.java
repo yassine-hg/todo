@@ -3,6 +3,7 @@ import com.sun.net.httpserver.HttpExchange;
 import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +15,7 @@ import java.net.http.HttpResponse;
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.*;
+import java.security.*;
 
 
 public class server {
@@ -28,6 +30,7 @@ public class server {
     String clientSecret = props.getProperty("google.client.secret");
     String redirectUri = props.getProperty("google.redirect.uri");
     Map<String, String> session = new ConcurrentHashMap<>();
+    Map<String, String> stateMap = new ConcurrentHashMap<>();
 
 
     HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
@@ -92,41 +95,63 @@ public class server {
             });  
             
             server.createContext("/login", exchange -> {
-                String authUrl = "https://accounts.google.com/o/oauth2/v2/auth"
+                try{
+                    SecureRandom codeVerifier = new SecureRandom(); 
+                    byte[] bytes = new byte[32];
+                    codeVerifier.nextBytes(bytes);
+                    String encoding =  Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+                    MessageDigest md = MessageDigest.getInstance("SHA-256");
+                    byte[] hashBytes = md.digest(encoding.getBytes("UTF-8"));
+                    String codeChallenge = Base64.getUrlEncoder().withoutPadding().encodeToString(hashBytes);
+                    String state = UUID.randomUUID().toString();
+                    stateMap.put(state, encoding);
+
+                    String authUrl = "https://accounts.google.com/o/oauth2/v2/auth"
                     + "?client_id=" + clientId
                     + "&redirect_uri=" + URLEncoder.encode(redirectUri, "UTF-8")
                     + "&response_type=code"
-                    + "&scope=" + URLEncoder.encode("openid email profile", "UTF-8");
+                    + "&scope=" + URLEncoder.encode("openid email profile", "UTF-8")
+                    + "&code_challenge=" + codeChallenge
+                    + "&code_challenge_method=S256"
+                    + "&state=" + state;
 
-                exchange.getResponseHeaders().set("Location", authUrl);
-                exchange.sendResponseHeaders(302, -1);
-                exchange.close();
+                    exchange.getResponseHeaders().set("Location", authUrl);
+                    exchange.sendResponseHeaders(302, -1);
+                    exchange.close();
+                    
+                }catch(NoSuchAlgorithmException e){
+                    System.err.println("Error SHA-256 not found");
+                }
+            
             });
             server.createContext("/callback", exchange -> {
                 try {
                     String query = exchange.getRequestURI().getQuery();
                     String code = "";
+                    String state = "";
 
                     for (String pair : query.split("&")) {
                         String[] kv = pair.split("=", 2);
                         if (kv[0].equals("code")) code = URLDecoder.decode(kv[1], "UTF-8");
+                        if(kv[0].equals("state")) state = URLDecoder.decode(kv[1] , "UTF-8");
                     }
-
+                    String codeVerifier = stateMap.get(state);
+                    stateMap.remove(state);
                     String form = "code=" + URLEncoder.encode(code, "UTF-8")
                         + "&client_id=" + URLEncoder.encode(clientId, "UTF-8")
                         + "&client_secret=" + URLEncoder.encode(clientSecret, "UTF-8")
                         + "&redirect_uri=" + URLEncoder.encode(redirectUri, "UTF-8")
-                        + "&grant_type=authorization_code";
+                        + "&grant_type=authorization_code"
+                        + "&code_verifier=" + URLEncoder.encode(codeVerifier , "UTF-8");
 
-                    HttpClient client = HttpClient.newHttpClient();
-
+                    HttpClient client = HttpClient.newHttpClient(); //creating  the  cliend  for sending  la requette 
                     HttpRequest req = HttpRequest.newBuilder()
                         .uri(URI.create("https://oauth2.googleapis.com/token"))
                         .header("Content-Type", "application/x-www-form-urlencoded")
                         .POST(HttpRequest.BodyPublishers.ofString(form))
                         .build();
 
-                    HttpResponse<String> res = client.send(req, HttpResponse.BodyHandlers.ofString());
+                    HttpResponse<String> res = client.send(req, HttpResponse.BodyHandlers.ofString()); //sending 
                     System.out.println("TOKEN RESPONSE: " + res.body());
                     String body = res.body();
                     int keyPos = body.indexOf("\"id_token\"");
@@ -140,9 +165,7 @@ public class server {
 
 
                     String[] parts = idToken.split("\\.");
-                    System.out.println("EXTRACTED: [" + idToken + "]");
                     String payloadJson = new String(Base64.getUrlDecoder().decode(parts[1]), "UTF-8");
-                    System.out.println("PAYLOAD: " + payloadJson);
 
                     // fetching  and  printing the  email 
                     int emailKey = payloadJson.indexOf("\"email\"");
@@ -156,8 +179,6 @@ public class server {
                     session.put(sessionId, email);
                     exchange.getResponseHeaders().set("Set-Cookie", "session=" + sessionId + "; Path=/; HttpOnly");
                     
-                    
-
                     exchange.getResponseHeaders().set("Location", "/");
                     exchange.sendResponseHeaders(302, -1);
                     exchange.close();
