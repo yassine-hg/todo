@@ -26,12 +26,12 @@ public class server {
     String url = props.getProperty("db.url");
     String user = props.getProperty("db.user");
     String password = props.getProperty("db.password");
+     
     String clientId = props.getProperty("google.client.id");
     String clientSecret = props.getProperty("google.client.secret");
     String redirectUri = props.getProperty("google.redirect.uri");
     Map<String, String> session = new ConcurrentHashMap<>();
     Map<String, String> stateMap = new ConcurrentHashMap<>();
-
 
     HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
         server.createContext("/api/tasks", exchange -> { // this runs when we hit the request /api/taks
@@ -124,6 +124,7 @@ public class server {
                 }
             
             });
+
             server.createContext("/callback", exchange -> {
                 try {
                     String query = exchange.getRequestURI().getQuery();
@@ -191,6 +192,8 @@ public class server {
             });
 
             //read the session cookie return the email or a 401
+
+             
             server.createContext("/api/me", exchange -> {
                try {
                 String email = null;
@@ -222,8 +225,8 @@ public class server {
                    e.printStackTrace();
                }
             });
-
             //logout
+            
             server.createContext("/logout", exchange -> {
                 try {
                     List<String> cookies = exchange.getRequestHeaders().get("Cookie");
@@ -245,7 +248,6 @@ public class server {
                 }
             });
             
-
             server.setExecutor(null);
             server.start(); 
         }
