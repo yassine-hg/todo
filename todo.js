@@ -1,4 +1,3 @@
-console.log("v2")
 const modal = document.getElementById("modal");
 const add = document.getElementById("add");
 const close_x = document.getElementById("close_x");
@@ -83,9 +82,11 @@ async function checkAuth() {
 
     if (res.ok) {
         document.getElementById("login_link").classList.add("hidden");
+        document.getElementById("login_link_keycload").classList.add("hidden");
         document.getElementById("user_info").classList.remove("hidden");
+        
     } else {
-        document.getElementById("login_link").classList.remove("hidden");
+        document.getElementById("logout_link").classList.remove("hidden");
         document.getElementById("user_info").classList.add("hidden");
     }
 }
