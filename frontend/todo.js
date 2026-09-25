@@ -86,7 +86,8 @@ async function checkAuth() {
         document.getElementById("user_info").classList.remove("hidden");
         
     } else {
-        document.getElementById("logout_link").classList.remove("hidden");
+        document.getElementById("login_link").classList.remove("hidden");
+        document.getElementById("login_link_keycload").classList.remove("hidden");
         document.getElementById("user_info").classList.add("hidden");
     }
 }

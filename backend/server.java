@@ -4,7 +4,6 @@ import java.net.InetSocketAddress;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -21,15 +20,13 @@ import java.security.*;
 public class server {
     
     public static void main(String[] args) throws IOException {
-    Properties props = new Properties();
-    props.load(new FileInputStream("config.properties"));
-    String url = props.getProperty("db.url");
-    String user = props.getProperty("db.user");
-    String password = props.getProperty("db.password");
+    String url = System.getenv("DB_URL");
+    String user = System.getenv("DB_USER");
+    String password = System.getenv("DB_PASSWORD");
      
-    String clientId = props.getProperty("google.client.id");
-    String clientSecret = props.getProperty("google.client.secret");
-    String redirectUri = props.getProperty("google.redirect.uri");
+    String clientId = System.getenv("GOOGLE_CLIENT_ID");
+    String clientSecret = System.getenv("GOOGLE_CLIENT_SECRET");
+    String redirectUri = System.getenv("GOOGLE_REDIRECT_URI");
     Map<String, String> session = new ConcurrentHashMap<>();
     Map<String, String> stateMap = new ConcurrentHashMap<>();
 
